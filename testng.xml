@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="AutomationSuite">
+
+    <listeners>
+        <listener class-name="org.listener.DynList" />
+    </listeners>
+    
+    <test name="AutomationTest">
+        <classes>
+            <class name="org.engine.DynTest" />
+        </classes>
+    </test>
+</suite>

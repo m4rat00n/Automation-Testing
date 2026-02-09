@@ -1,0 +1,103 @@
+{
+  "txtUserID": {
+    "xpath_web": "//input[@id='TXT_USERNAME']",
+    "keterangan": ""
+  },
+  "txtPassword": {
+    "xpath_web":"//input[@id='TXT_PASSWORD']",
+    "keterangan":""
+  },
+  "btnLogin": {
+    "xpath_web":"//input[@value='Login' and @type='button']",
+    "keterangan":""
+  },
+  "mainFrame": {
+    "xpath_web":"//frame[@name='main']",
+    "keterangan":""
+  },
+  "btnMenuInitial": {
+    "xpath_web":"//td[@id='menu_DXI0_T']",
+    "keterangan":""
+  },
+  "btnMenuInitialDataEntry": {
+    "xpath_web":"//td[@id='menu_DXI0i3_T']",
+    "keterangan":""
+  },
+  "txtBarcodeID": {
+    "xpath_web":"//input[@id='mainPanel_BARCODE_P_txtID']",
+    "keterangan":""
+  },
+  "iframeFramex": {
+    "xpath_web":"//iframe[@id='framex']",
+    "keterangan":""
+  },
+  "btnPilihBarcode": {
+    "xpath_web":"//input[@id='mainPanel_BARCODE_P_btnlink']",
+    "keterangan":""
+  },
+  "btnLastPageNumber": {
+    "xpath_web":"//td[contains(@class,'dxpPageNumber')][last()]",
+    "keterangan":""
+  },
+  "btnLastListBarcode": {
+    "xpath_web":"//tr[contains(@id,'ucpuc2_Popup_Grid_DXDataRow')][last()]",
+    "keterangan":""
+  },
+  "btnPilihKodeProgram": {
+    "xpath_web":"//input[@id='mainPanel_df_PR_CODE_btnlink']",
+    "keterangan":""
+  },
+  "txtKodeProgram": {
+    "xpath_web":"//input[@id='ucpuc_Popup_Grid_DXFREditorcol2_I']",
+    "keterangan":""
+  },
+  "btnReplaceKodeProgram": {
+    "xpath_web":"//td[text()='%']",
+    "keterangan":""
+  },
+  "btnPilihChannel": {
+    "xpath_web":"//td[text()='%']",
+    "keterangan":""
+  },
+  "btnFacilities": {
+    "xpath_web":"//td[@id='menu_DXI3_T']",
+    "keterangan":""
+  },
+  "btnInquirybyStatus": {
+    "xpath_web":"//td[@id='menu_DXI3i1_T']",
+    "keterangan":""
+  },
+  "btnSearchFilter": {
+    "xpath_web":"//input[@id='ld_listPanel_USC_Filter1_btnSeach']",
+    "keterangan":""
+  },
+  "txtInputFilterNoAplikasi": {
+    "xpath_web":"//td[text()='No Aplikasi']/following-sibling::td/input[contains(@id,'InputFilter')]",
+    "keterangan":""
+  },
+  "btnDetailInquiry_Replace": {
+    "xpath_web":"//td[./following-sibling::td[text()='%']]/a[text()='Detail']",
+    "keterangan":""
+  },
+  "lblTitleHeaderInquryByStatus": {
+    "xpath_web":"//span[@id='TitleHeader' and text()='Inquiry By Status']",
+    "keterangan":""
+  },
+  "lblTrackHistoryInquiry": {
+    "xpath_web":"//td[text()='Track History']",
+    "keterangan":""
+  },
+  "btnNLPCConsumerSHAD": {
+    "xpath_web":"//a[text()='NLPC Consumer SHAD']",
+    "keterangan":""
+  },
+  "btnNLPCConsumerSHAD_clicked": {
+    "xpath_web":"//a[text()='NLPC Consumer SHAD' and contains(@style,'color:BlueViolet')]",
+    "keterangan":""
+  },
+  "btnLogout": {
+    "xpath_web":"//a[contains(@href,'Logout')]",
+    "keterangan":""
+  }
+
+}

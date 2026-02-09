@@ -1,0 +1,170 @@
+{
+  "txtUsername": {
+    "xpath_web": "//input[@name='user_name']",
+    "keterangan": ""
+  },
+  "txtPassword": {
+    "xpath_web": "//input[@name='password']",
+    "keterangan": ""
+  },
+  "btnShowPassword": {
+    "xpath_web": "//a[contains(@class,'show-password')]",
+    "keterangan": ""
+  },
+  "btnLogin": {
+    "xpath_web": "//button[@label='Login']",
+    "keterangan": ""
+  },
+  "btnAvatarLogin": {
+    "xpath_web": "//div[contains(@class,'MuiAvatar')]",
+    "keterangan": ""
+  },
+  "btnBurgerIcon": {
+    "xpath_web": "//*[local-name()='svg' and contains(@data-testid,'drawer')]",
+    "keterangan": ""
+  },
+  "btnMenuItem": {
+    "xpath_web": "//li[@data-testid='menu-item']",
+    "keterangan": ""
+  },
+  "btnClaimBenefit": {
+    "xpath_web": "//span[text()='Benefit Claim']",
+    "keterangan": ""
+  },
+  "btnCreateNewBenefit": {
+    "xpath_web": "//a[text()='New']",
+    "keterangan": ""
+  },
+  "btnSave": {
+    "xpath_web": "//button[text()='Save']",
+    "keterangan": ""
+  },
+  "btnSearchCategory": {
+    "xpath_web": "//div[./div[@class='form-group'] and .//label[contains(text(),'Category')]]/following-sibling::div/button[./span[text()='search']]",
+    "keterangan": ""
+  },
+  "txtSearchCategory": {
+    "xpath_web": "//div[text()='Category']/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "btnRplOption": {
+    "xpath_web": "(//span[text()='%'])[1]",
+    "keterangan": ""
+  },
+  "btnSearchType": {
+    "xpath_web": "//div[./div[@class='form-group'] and .//label[contains(text(),'Type')]]/following-sibling::div/button[./span[text()='search']]",
+    "keterangan": ""
+  },
+  "txtSearchType": {
+    "xpath_web": "//div[text()='Type']/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtPurpose": {
+    "xpath_web": "//textarea[@name='purpose']",
+    "keterangan": ""
+  },
+  "btnSelectClaimCurrency": {
+    "xpath_web": "//label[contains(text(),'Claim Currency')]/following-sibling::div/div[@role='button']",
+    "keterangan": ""
+  },
+  "btnOptionSelectDiv": {
+    "xpath_web": "//li[@data-value='%']",
+    "keterangan": ""
+  },
+  "txtReference": {
+    "xpath_web": "//textarea[@name='reference']",
+    "keterangan": ""
+  },
+  "txtDescription": {
+    "xpath_web": "//textarea[@name='description']",
+    "keterangan": ""
+  },
+  "btnNewClaimItem": {
+    "xpath_web": "//button[text()='New' and not(@disabled)]",
+    "keterangan": ""
+  },
+  "txtFromDateItem": {
+    "xpath_web": "//label[contains(text(),'From Date')]/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtToDateItem": {
+    "xpath_web": "//label[contains(text(),'To Date')]/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "btnPilihClaimItem": {
+    "xpath_web": "//div[./div[@class='form-group'] and .//label[contains(text(),'Claim Item')]]/following-sibling::div/button[./span[text()='search']]",
+    "keterangan": ""
+  },
+  "txtPilihClaimItem": {
+    "xpath_web": "//div[text()='Claim Item']/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtJumlahUnitClaim": {
+    "xpath_web": "//input[@name='claim_detail.quantity']",
+    "keterangan": ""
+  },
+  "txtAmountPerUnit": {
+    "xpath_web": "//label[contains(text(),'Amount/Unit')]/following-sibling::div/textarea[not(@aria-hidden='true')]",
+    "keterangan": ""
+  },
+  "txtAdjustedClaim": {
+    "xpath_web": "//label[contains(text(),'Adjusted Claim')]/following-sibling::div/textarea[not(@aria-hidden='true')]",
+    "keterangan": ""
+  },
+  "txtProvider": {
+    "xpath_web": "//label[contains(text(),'Provider')]/following-sibling::div/textarea[not(@aria-hidden='true')]",
+    "keterangan": ""
+  },
+  "txtDescriptionSubmitClaim": {
+    "xpath_web": "//div[@role='presentation']//label[contains(text(),'Description')]/following-sibling::div/textarea[not(@aria-hidden='true')]",
+    "keterangan": ""
+  },
+  "btnRelationship": {
+    "xpath_web": "//div[./div[@class='form-group'] and .//label[contains(text(),'Relationship')]]/following-sibling::div/button[./span[text()='search']]",
+    "keterangan": ""
+  },
+  "txtPilihRelationship": {
+    "xpath_web": "//div[text()='Relationship']/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "btnNama": {
+    "xpath_web": "//div[./div[@class='form-group'] and .//label[contains(text(),'Nama')]]/following-sibling::div/button[./span[text()='search']]",
+    "keterangan": ""
+  },
+  "txtContactFullName": {
+    "xpath_web": "//div[text()='Contact Full Name']/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtBillNumber": {
+    "xpath_web": "//label[contains(text(),'Bill Number')]/following-sibling::div/textarea[not(@aria-hidden='true')]",
+    "keterangan": ""
+  },
+  "txtDiagnosa": {
+    "xpath_web": "//label[contains(text(),'Diagnosa')]/following-sibling::div/textarea[not(@aria-hidden='true')]",
+    "keterangan": ""
+  },
+  "btnRSorKlinik": {
+    "xpath_web": "//div[./div[@class='form-group'] and .//label[contains(text(),'RS / Klinik')]]/following-sibling::div/button[./span[text()='search']]",
+    "keterangan": ""
+  },
+  "txtValueKlinik": {
+    "xpath_web": "//div[text()='Value']/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtRSorKlinikName": {
+    "xpath_web": "//label[contains(text(),'RS / Klinik Name')]/following-sibling::div/textarea[not(@aria-hidden='true')]",
+    "keterangan": ""
+  },
+  "btnSavePopUp": {
+    "xpath_web": "//div[@role='presentation']//button[text()='Save']",
+    "keterangan": ""
+  },
+  "btnAddAttachment": {
+    "xpath_web": "//button[text()='Attachment' or text()='Lampiran']",
+    "keterangan": ""
+  },
+  "btnAddNewDocument": {
+    "xpath_web": "//div[@role='presentation']//button[text()='New']",
+    "keterangan": ""
+  }
+}
