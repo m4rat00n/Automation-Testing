@@ -27,11 +27,17 @@ public class DynamicTest {
 
     @AfterClass
     public void teardown() {
-        if (driver != null) {
-            for (String handle : driver.getWindowHandles()) {
-                driver.switchTo().window(handle);
-                TestFactory.teardown();
+        try {
+            if (driver != null) {
+                if (MyConfig.driverType.equalsIgnoreCase("web")) {
+                    for (String handle : driver.getWindowHandles()) {
+                        driver.switchTo().window(handle);
+                        TestFactory.teardown();
+                    }
+                } else {
+                    TestFactory.teardown();
+                }
             }
-        }
+        } catch (Exception ignored) {}
     }
 }

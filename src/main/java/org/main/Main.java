@@ -3,25 +3,31 @@ package org.main;
 import static Utils.MyConfig.intEndData;
 import static Utils.MyConfig.intStartData;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.testng.TestNG;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
+import Services.TestFactory;
 import Utils.ExcelReader;
 import Utils.MyConfig;
 
 public class Main {
     public static void main(String[] args) throws NumberFormatException, Exception {
-        String filePath = MyConfig.datatablePath;
+        String filePath = TestFactory.getProperties("datatablePath");
+        MyConfig.mapStrXpath = new HashMap<String, String>();
         MyConfig.datatableFile = filePath;
         String dataInfo = "DATA-INFO";
 
         MyConfig.intStartData = Integer.valueOf(ExcelReader.getStrCellValueByRow(filePath, dataInfo, 1, "Start Data"));
         MyConfig.intEndData = Integer.valueOf(ExcelReader.getStrCellValueByRow(filePath, dataInfo, 1, "End Data"));
+        MyConfig.mapStrXpath = ExcelReader.readXpathSheet(filePath, "XPATH");
 
         // MyConfig.intCurrentDataNo = MyConfig.intStartData;
         

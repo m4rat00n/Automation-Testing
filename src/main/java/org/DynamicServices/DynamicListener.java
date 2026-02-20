@@ -9,15 +9,18 @@ import Services.ScreenshotService;
 public class DynamicListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
-        ScreenshotService.screenshot_full_whole();
-        ReportService.appendDTStatus(result);
-        ReportService.generateReport();
-
         String meesage = result.getThrowable().getMessage();
         if (meesage != null && meesage.contains("(Session info")) {
             meesage = meesage.substring(0, meesage.indexOf("(Session info")).trim();
+            System.out.println("Test Failed: " + meesage);
+        } else {
+            System.out.println("Test Failed: ");
+            result.getThrowable().printStackTrace();
         }
-        System.out.println("Test Failed: " + meesage);
+        
+        ScreenshotService.screenshot_full_whole();
+        ReportService.appendDTStatus(result);
+        ReportService.generateReport();
     }
 
     @Override

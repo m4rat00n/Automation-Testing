@@ -9,10 +9,6 @@ import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.v128.page.Page;
 import org.openqa.selenium.io.FileHandler;
 
 import javax.imageio.ImageIO;
@@ -21,11 +17,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.Optional;
-
 import static Utils.MyConfig.driver;
 
 public class ScreenshotService {
@@ -43,7 +34,7 @@ public class ScreenshotService {
             destFolder.mkdirs();
         }
 
-        String filePath = folderPath + File.separator + MyConfig.intCurrentDataNo + "_" + fileName + "_" +MyConfig.TestCaseCount+ "_" + MyConfig.screenshotCount++ + ".png";
+        String filePath = folderPath + File.separator + MyConfig.intScreenshotDataNo + "_" + fileName + "_" +MyConfig.TestCaseCount+ "_" + MyConfig.screenshotCount++ + ".png";
         return filePath;
     }
     public static void screenshot(){
@@ -61,7 +52,7 @@ public class ScreenshotService {
         String filePath = getImageName();
         
         try {
-            BufferedImage image = Shutterbug.shootPage(driver, Capture.FULL_SCROLL).getImage();
+            BufferedImage image = Shutterbug.shootPage(driver, Capture.FULL).getImage();
             ImageIO.write(image, "png", new File(filePath));
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,7 +80,7 @@ public class ScreenshotService {
 
         BufferedImage finalImage = new BufferedImage(
             1920,
-            (int) ((pageHeight * dpr) - ((stickyHeight * dpr) * (screenshots-1))),
+            (int) ((pageHeight * dpr)), //- ((stickyHeight * dpr) * (screenshots-1))),
             BufferedImage.TYPE_INT_RGB
         );
 
@@ -97,18 +88,41 @@ public class ScreenshotService {
 
         try {
             int heightTemp = 0;
+            int totalStickyHead = 0;
+            int flagLastImg = 0;
+            int cropTopPx = 0; //dpr
             for (int i = 0; i < screenshots; i++) {
-                js.executeScript("window.scrollTo(0, arguments[0])", ((i * viewportHeight)-(stickyHeight*dpr)));
+                if (i == screenshots-1) {
+                    if ((totalStickyHead + cropTopPx) >= viewportHeight * dpr) {
+                        screenshots += (int) Math.round(
+                            (double) (totalStickyHead + cropTopPx) / (viewportHeight * dpr)
+                        );
+                        totalStickyHead = 0;
+                        flagLastImg = screenshots - 1;
+                    }
+                    else {
+                        flagLastImg = i;
+                    }
+                }
+                js.executeScript("window.scrollTo(0, arguments[0])", ((i * viewportHeight)-(i * stickyHeight)));
                 Thread.sleep(500);
+                if (getHeaderHeight()!=stickyHeight) {
+                    stickyHeight = getHeaderHeight();
+                    js.executeScript("window.scrollTo(0, arguments[0])", ((i * viewportHeight)-(i * stickyHeight)));
+                    Thread.sleep(500);
+                }
+                screenshot();
                 File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 BufferedImage img = ImageIO.read(src);
                 
                 int y = (int) (i * viewportHeight * dpr);
-                int cropTopPx; //dpr
                 if (i > 0) {
                     cropTopPx = Math.min((int) (getHeaderHeight() * dpr), img.getHeight() - 1);
+                    totalStickyHead += cropTopPx;
                     if (i==1) {
-                        heightTemp = y - cropTopPx;
+                        heightTemp = y;
+                    } else if (i == flagLastImg) {
+                        cropTopPx = img.getHeight() - ((int) (pageHeight * dpr) - heightTemp);
                     }
                 } else {
                     cropTopPx = img.getHeight() - ((int) (pageHeight * dpr) - y);
@@ -128,7 +142,7 @@ public class ScreenshotService {
                     heightTemp += plus;
                 } else {
                     grp.drawImage(img, 0, y, null);
-                } 
+                }
             }
 
             ImageIO.write(finalImage, "png", new File(filePath));

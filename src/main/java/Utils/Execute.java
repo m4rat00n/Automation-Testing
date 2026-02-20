@@ -8,9 +8,13 @@ import static Utils.MyConfig.actionSheetName;
 import static Utils.MyConfig.intCurrentDataNo;
 import static Utils.MyConfig.intCurrentRow;
 
+import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Execute {
 
@@ -31,19 +35,24 @@ public class Execute {
     public static void setValue(String value) { thrValue.set(value); }
 
     public void runExcelDrivenTest() throws Exception {
-        String filePath = MyConfig.datatablePath;
+        String filePath = TestFactory.getProperties("datatablePath");
         TestCaseCount = 0;
         System.out.println("\n================= Starting Data No: "+ intCurrentDataNo +" =================");
+        MyConfig.intScreenshotDataNo = intCurrentDataNo;
         String datatable = "Datatable";
         Boolean isrunning = false;
         actionSheetName = ExcelReader.getStrCellValueByRow(filePath, datatable, intCurrentDataNo, "ACTION");
         thrScenario.set(ExcelReader.getStrCellValueByRow(filePath, datatable, intCurrentDataNo, "SCENARIO"));
 
-        List<Map<String, String>> rows = ExcelReader.readSheet(filePath, actionSheetName);
         BaseFunction base = new BaseFunction();
 
-        for (intCurrentRow = 0; intCurrentRow < rows.size() ; intCurrentRow++) {
-            Map<String, String> row = rows.get(intCurrentRow);
+        FileInputStream fis = new FileInputStream(filePath);
+        XSSFWorkbook workbook = new XSSFWorkbook(fis);
+        XSSFSheet sheet = workbook.getSheet(actionSheetName);
+
+        for (intCurrentRow = 1; intCurrentRow < sheet.getLastRowNum()+1; intCurrentRow++) {
+            List<Map<String, String>> rows = ExcelReader.readSheet(filePath, actionSheetName,intCurrentRow);
+            Map<String, String> row = rows.get(0);
             String TestCase = row.get("TestCase");
             String strRunning = row.get("IsRunning");
             String keyword = row.get("Keyword");
@@ -52,7 +61,7 @@ public class Execute {
             String Application = row.get("Application");
 
             if (TestCase.equalsIgnoreCase("") && !keyword.equalsIgnoreCase("") && isrunning) {
-                System.out.println("\nExecuting: " + keyword +" in row : "+ (intCurrentRow + 2));
+                System.out.println("\nExecuting: " + keyword +" in row : "+ (intCurrentRow + 1));
 
                 // First, try BaseFunction
                 boolean methodFound = executeMethodInBaseFunction(base, keyword);

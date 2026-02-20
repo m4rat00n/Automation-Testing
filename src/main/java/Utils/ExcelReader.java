@@ -20,7 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelReader {
-    public static List<Map<String, String>> readSheet(String filePath, String sheetName) throws Exception {
+    public static List<Map<String, String>> readSheet(String filePath, String sheetName, int row) throws Exception {
         List<Map<String, String>> data = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream(filePath);
@@ -37,32 +37,27 @@ public class ExcelReader {
 
             int colCount = headerRow.getLastCellNum();
 
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row currentRow = sheet.getRow(i);
-                if (currentRow == null) {
-                    continue;
+            Row currentRow = sheet.getRow(row);
+
+            Map<String, String> rowData = new HashMap<>();
+
+            for (int j = 0; j < colCount; j++) {
+                String header = "";
+                if (headerRow.getCell(j) != null) {
+                    header = formatter.formatCellValue(headerRow.getCell(j));
                 }
 
-                Map<String, String> rowData = new HashMap<>();
-
-                for (int j = 0; j < colCount; j++) {
-                    String header = "";
-                    if (headerRow.getCell(j) != null) {
-                        header = formatter.formatCellValue(headerRow.getCell(j));
-                    }
-
-                    Cell cell = currentRow.getCell(j);
-                    
-					String value = getCellValue(cell, workbook);		
-                    rowData.put(header, value);
-                }
-
-                data.add(rowData);
+                Cell cell = currentRow.getCell(j);
+                
+				String value = getCellValue(cell, workbook);		
+                rowData.put(header, value);
             }
+
+            data.add(rowData);
 
         } catch (Exception e) {
             e.printStackTrace();
-			throw new Exception(e.getMessage());
+			throw new Exception(e.getCause());
         }
         return data;
     }
@@ -87,6 +82,7 @@ public class ExcelReader {
 					try {
                         // Modify formula to use dynamic row number
                         String formula = cell.getCellFormula();
+						formula = "IF(" + formula + "=\"\",\"\","+ formula + ")";
                         formula = formula.replaceAll("\\$1", String.valueOf(intCurrentDataNo+1));
                         cell.setCellFormula(formula);
                         evaluator.evaluateInCell(cell);
@@ -130,23 +126,28 @@ public class ExcelReader {
 		return incCol;
 	}
 
-	public static int get_anchor_row_from_currentRow (String filePath, String strValue) throws Exception {
+	public static int get_anchor_row_from_currentRow (String filePath, String Keyword, String strValue) {
 		int intRow = 0 ;
 		Boolean foundFlag = false;
-		FileInputStream fis = new FileInputStream(filePath);
-		XSSFWorkbook workbook = new XSSFWorkbook(fis);
-		XSSFSheet sheet = workbook.getSheet(actionSheetName);
-		for (int i=intCurrentRow ; i<sheet.getLastRowNum(); i++){
-			String strKeyword = getStrCellValueByRow(filePath, actionSheetName, i, "Keyword");
-			String value = getStrCellValueByRow(filePath, actionSheetName, i, "Value");
-			if (strKeyword.equalsIgnoreCase("anchor_go_to_value") && value.equalsIgnoreCase(strValue)) {
-				intRow = i;
-				foundFlag = true;
-				break;
+		try {
+			FileInputStream fis = new FileInputStream(filePath);
+			XSSFWorkbook workbook = new XSSFWorkbook(fis);
+			XSSFSheet sheet = workbook.getSheet(actionSheetName);
+			for (int i=intCurrentRow ; i<sheet.getLastRowNum()+1; i++){
+				String strKeyword = getStrCellValueByRow(filePath, actionSheetName, i, "Keyword");
+				String value = getStrCellValueByRow(filePath, actionSheetName, i, "Value");
+				if (strKeyword.equalsIgnoreCase(Keyword) && value.equalsIgnoreCase(strValue)) {
+					intRow = i;
+					foundFlag = true;
+					break;
+				}
 			}
-		}
-		if (!foundFlag) {
-			System.out.println("[FLAG ERROR] anchor_go_to_value with "+strValue+" Not Found");
+			if (!foundFlag) {
+				System.out.println("[FLAG ERROR] anchor_go_to_value with "+strValue+" Not Found");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getCause());
 		}
 		return intRow;
 	}
@@ -179,4 +180,59 @@ public class ExcelReader {
 		}
 		return value;
 	}
+
+	public static ArrayList<Integer> get_dataForSheet(int DataNo, String value){
+		// [0] -> Sheet Name ; [1] -> Anchor Name
+		ArrayList<Integer> arrDataList = new ArrayList<Integer>();
+
+		String[] parts = value.split(";");
+		FileInputStream fis;
+		XSSFWorkbook workbook = null;
+		String filePath = MyConfig.datatableFile;
+		try {
+			fis = new FileInputStream(filePath);
+			workbook = new XSSFWorkbook(fis);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		XSSFSheet sheet = workbook.getSheet(parts[0]);
+		for (int i = 0 ; i < sheet.getLastRowNum()+1; i++){
+			String strNo = getStrCellValueByRow(filePath, parts[0], i, "NO");
+			if (strNo.equalsIgnoreCase(String.valueOf(DataNo))) {
+				arrDataList.add(i);
+			}
+		}
+
+		return arrDataList;
+	}
+
+	public static Map<String, String> readXpathSheet(String filePath, String sheetName) throws Exception {
+        List<String> data = new ArrayList<>();
+		Map<String, String> rowData = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(filePath);
+             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+
+            XSSFSheet sheet = workbook.getSheet(sheetName);
+
+            Row headerRow = sheet.getRow(0);
+            if (headerRow == null) {
+                return rowData;
+            }
+
+			for (int i=1; i < sheet.getLastRowNum()+1; i++){
+				Row currentRow = sheet.getRow(i);
+				data = new ArrayList<>();
+				for (int j = 0; j < 2; j++) {
+					Cell cell = currentRow.getCell(j);
+					data.add(getCellValue(cell, workbook));		
+				}
+				rowData.put(data.get(0), data.get(1));
+			}
+        } catch (Exception e) {
+            e.printStackTrace();
+			throw new Exception(e.getCause());
+        }
+        return rowData;
+    }
 }

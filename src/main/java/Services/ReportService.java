@@ -109,6 +109,8 @@ public class ReportService {
             Font font = workbook.createFont();
             CellStyle style = workbook.createCellStyle();
             if (result.getStatus() == ITestResult.FAILURE){
+                if (row.getCell(statusCol) == null) {row.createCell(statusCol);}
+                if (row.getCell(ketCol) == null) {row.createCell(ketCol);}
                 row.getCell(statusCol).setCellValue("FAILED");
                 font.setColor(IndexedColors.RED.getIndex());
                 row.getCell(ketCol).setCellValue((result.getThrowable().getMessage() != null && result.getThrowable().getMessage().contains("(Session info")) 
@@ -117,10 +119,12 @@ public class ReportService {
                 );
             }
             else if (result.getStatus() == ITestResult.SUCCESS){
+                if (row.getCell(statusCol) == null) {row.createCell(statusCol);}
                 row.getCell(statusCol).setCellValue("PASSED");
                 font.setColor(IndexedColors.BLUE.getIndex());
             }
             else if (result.getStatus() == ITestResult.SKIP){
+                if (row.getCell(statusCol) == null) {row.createCell(statusCol);}
                 row.getCell(statusCol).setCellValue("SKIPPED");
                 font.setColor(IndexedColors.GREY_80_PERCENT.getIndex());
             }
@@ -207,9 +211,9 @@ public class ReportService {
                     h1.setNumILvl(BigInteger.ZERO);
 
                     h1.getCTP()
-                    .getPPr()
-                    .addNewOutlineLvl()
-                    .setVal(BigInteger.ZERO);
+                        .getPPr()
+                        .addNewOutlineLvl()
+                        .setVal(BigInteger.ZERO);
                     
                     XWPFRun r1 = h1.createRun();
                     if (!splitImgName[0].equalsIgnoreCase(String.valueOf(MyConfig.intStartData))) {
@@ -288,7 +292,10 @@ public class ReportService {
                 double widthPt = Math.round((widthPx / (double) dpi) * 72);
                 double heightPt = Math.round((heightPx / (double) dpi) * 72);
                 
-                if (heightPt/widthPt > 1.5 && heightPt/widthPt < 4) {
+                if (MyConfig.driverType.equalsIgnoreCase("mobile")) {
+                    heightPt = 265.2;
+                    widthPt = 119.9;
+                } else if (heightPt/widthPt > 1.5 && heightPt/widthPt < 4) {
                     heightPt = 550;
                     widthPt = 350;
                 } else if (heightPt/widthPt > 4) {

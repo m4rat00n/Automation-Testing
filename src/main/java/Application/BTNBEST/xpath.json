@@ -44,7 +44,7 @@
     "keterangan": ""
   },
   "txtSearchCategory": {
-    "xpath_web": "//div[text()='Category']/following-sibling::div/input",
+    "xpath_web": "//div[@role='presentation']//div[text()='Category']/following-sibling::div/input",
     "keterangan": ""
   },
   "btnRplOption": {
@@ -156,7 +156,7 @@
     "keterangan": ""
   },
   "btnSavePopUp": {
-    "xpath_web": "//div[@role='presentation']//button[text()='Save']",
+    "xpath_web": "//div[@role='presentation']//button[text()='Save' and not(@disabled)]",
     "keterangan": ""
   },
   "btnAddAttachment": {
@@ -165,6 +165,78 @@
   },
   "btnAddNewDocument": {
     "xpath_web": "//div[@role='presentation']//button[text()='New']",
+    "keterangan": ""
+  },
+  "txtDocumentNumber": {
+    "xpath_web": "//textarea[@name='document_number']",
+    "keterangan": ""
+  },
+  "btnDocumentType": {
+    "xpath_web": "//div[./div[@class='form-group'] and .//label[contains(text(),'Document Type')]]/following-sibling::div/button[./span[text()='search']]",
+    "keterangan": ""
+  },
+  "txtDocumentType": {
+    "xpath_web": "//div[text()='Type']/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtDocExpiredDate": {
+    "xpath_web": "//label[contains(text(),'Expired Date')]/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtDocumentDescription": {
+    "xpath_web": "//div[@role='presentation']//textarea[@name='description']",
+    "keterangan": ""
+  },
+  "txtDocIssuedDate": {
+    "xpath_web": "//label[contains(text(),'Issued Date')]/following-sibling::div/input",
+    "keterangan": ""
+  },
+  "txtDocIssuedBy": {
+    "xpath_web": "//textarea[@name='issued_by']",
+    "keterangan": ""
+  },
+  "txtUploadDocument": {
+    "xpath_web": "//input[@name='file_data']",
+    "keterangan": ""
+  },
+  "popUp_AlertBTNBEST": {
+    "xpath_web": "//div[@role='presentation']/div[@role='alert']",
+    "keterangan": ""
+  },
+  "btnClosePopUp": {
+    "xpath_web": "//div[@role='presentation']//button[text()='Close']",
+    "keterangan": ""
+  },
+  "btnValidation": {
+    "xpath_web": "//button[text()='Validation']",
+    "keterangan": ""
+  },
+  "btnSubmit": {
+    "xpath_web": "//button[text()='Submit']",
+    "keterangan": ""
+  },
+  "btnLogout": {
+    "xpath_web": "//li[text()='Logout']",
+    "keterangan": ""
+  },
+  "btnOKPopUp": {
+    "xpath_web": "//div[@role='presentation']//button[text()='OK']",
+    "keterangan": ""
+  },
+  "txtSearchMenu": {
+    "xpath_web": "//div[./*[local-name()='svg' and @data-testid='SearchIcon']]/following-sibling::input",
+    "keterangan": ""
+  },
+  "imgProgressBar": {
+    "xpath_web": "//span[@role='progressbar']",
+    "keterangan": ""
+  },
+  "btnExpandEmployeeSelfService": {
+    "xpath_web": "//li[@data-testid='menu-item' and ./div[span[text()='Employee Self Service']]]/*[local-name()='svg' and @data-testid='ExpandMoreIcon']",
+    "keterangan": ""
+  },
+  "btnChooseFile": {
+    "xpath_web": "//label[@role='button' and text()='Choose File']",
     "keterangan": ""
   }
 }
