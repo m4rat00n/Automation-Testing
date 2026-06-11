@@ -20,13 +20,13 @@ public class DynamicListener implements ITestListener {
         
         ScreenshotService.screenshot_full_whole();
         ReportService.appendDTStatus(result);
-        ReportService.generateReport();
+        ReportService.generateReport(result);
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
         ReportService.appendDTStatus(result);
-        ReportService.generateReport();
+        ReportService.generateReport(result);
         System.out.println("Test Passed: " + result.getName());
     }
 

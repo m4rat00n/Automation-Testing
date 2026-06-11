@@ -1,6 +1,9 @@
 target/
 Report/
 test-output/
+src/main/resources/
+src/main/java/Utils/Automation.properties
+src/main/java/Utils/MyConfig.java
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

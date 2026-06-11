@@ -25,6 +25,7 @@ import org.apache.poi.util.Units;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
+import org.apache.poi.xwpf.usermodel.Borders;
 import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.TableRowAlign;
@@ -38,7 +39,6 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.STOnOff;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFonts;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
@@ -49,9 +49,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSpacing;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTrPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STSectionMark;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterTest;
 
 import Utils.ExcelReader;
 import Utils.MyConfig;
@@ -159,8 +157,8 @@ public class ReportService {
         }
     }
 
-    @SuppressWarnings("null")
-    public static void generateReport() {
+    @SuppressWarnings({"null", "CallToPrintStackTrace"})
+    public static void generateReport(ITestResult result) {
         String reportPath = getReportFolder();
         makeFolder(reportPath);
         File file = new File(reportPath + File.separator + getDTFileName() + ".docx");
@@ -301,7 +299,10 @@ public class ReportService {
                 } else if (heightPt/widthPt > 4) {
                     heightPt = 561.26;
                     widthPt = 131.81;
-                }else {
+                } else if (widthPt/heightPt > 0.9 && widthPt/heightPt < 1.13) {
+                    heightPt = 360;
+                    widthPt = 400;
+                } else {
                     heightPt = 224.5;
                     widthPt = 400.4;
                 }
@@ -315,6 +316,16 @@ public class ReportService {
             } catch (Exception error) {
                 throw new RuntimeException(error);
             }
+
+            XWPFTableRow resultRow = table.getRow(intFlagSub-1);
+            resultRow.getCell(1).removeParagraph(0);
+            XWPFParagraph resultText = resultRow.getCell(1).addParagraph();
+            setSpacing(resultText, false);
+            XWPFRun cell1 = resultText.createRun();
+            cell1.setText(" ");
+            cell1.setText((result.getStatus() == ITestResult.SUCCESS) ? splitImgName[2]+" - Berhasil":splitImgName[2]+" - Gagal");
+            cell1.setColor("000000");
+            setFont(cell1, "Arial", 10, true);
 
             //Initialize globally variables for testcase
             strTestcase = splitImgName[2];
@@ -385,21 +396,43 @@ public class ReportService {
         // ===== FOOTER =====
         XWPFFooter footer = policy.createFooter(XWPFHeaderFooterPolicy.DEFAULT);
 
-        XWPFParagraph footerPara = footer.createParagraph();
-        footerPara.setAlignment(ParagraphAlignment.RIGHT);
+        XWPFParagraph linePara = footer.createParagraph();
+        linePara.setBorderBottom(Borders.SINGLE);
+        linePara.setSpacingBefore(0);
+        linePara.setSpacingAfter(120);
+        linePara.setSpacingBetween(1.0);
 
-        XWPFRun footerRun = footerPara.createRun();
+        XWPFTable footerTable = footer.createTable(1, 2);
+        footerTable.setWidth("100%");
+        footerTable.removeBorders();
+
+        //Add test type text in the left side of the footer
+        XWPFTableRow row = footerTable.getRow(0);
+        XWPFParagraph leftPara = row.getCell(0).getParagraphs().get(0);
+        leftPara.setAlignment(ParagraphAlignment.LEFT);
+
+        XWPFRun leftRun = leftPara.createRun();
+        leftRun.setText(jenisTest.equalsIgnoreCase("SIT") ? "System Integration Testing" : 
+                         jenisTest.equalsIgnoreCase("UAT") ? "User Acceptance Testing" : "Regression Testing");
+        leftRun.setFontFamily("Arial");
+        leftRun.setFontSize(8);
+
+        //Add a page number text in the right side of the footer
+        XWPFParagraph rightPara = row.getCell(1).getParagraphs().get(0);
+        rightPara.setAlignment(ParagraphAlignment.RIGHT);
+
+        XWPFRun footerRun = rightPara.createRun();
         footerRun.setText("Page ");
         footerRun.setFontFamily("Arial");
         footerRun.setFontSize(8);
 
         // Add page number
-        footerRun = footerPara.createRun();
+        footerRun = rightPara.createRun();
         footerRun.getCTR().addNewFldChar().setFldCharType(
                 org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType.BEGIN);
-        footerRun = footerPara.createRun();
+        footerRun = rightPara.createRun();
         footerRun.getCTR().addNewInstrText().setStringValue("PAGE");
-        footerRun = footerPara.createRun();
+        footerRun = rightPara.createRun();
         footerRun.getCTR().addNewFldChar().setFldCharType(
                 org.openxmlformats.schemas.wordprocessingml.x2006.main.STFldCharType.END);  
     }
