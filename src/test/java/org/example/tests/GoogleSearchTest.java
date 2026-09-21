@@ -49,6 +49,7 @@ public class GoogleSearchTest {
         // Wait for the results to load and display the results
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search")));
         System.out.println("Search completed successfully.");
+        //==================== HALO ========================= //
     }
 
     @AfterClass
