@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +14,11 @@ import java.util.Properties;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
 import Utils.MyConfig;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
-
-import java.net.URL;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class TestFactory {
     public static void teardown() {
@@ -139,7 +140,7 @@ public class TestFactory {
                     MyConfig.driver = new IOSDriver(new URL(getProperties("urlServer")), capabilities);
                 }
             }
-        } catch (Exception e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to start driver: " + e.getMessage());
         }

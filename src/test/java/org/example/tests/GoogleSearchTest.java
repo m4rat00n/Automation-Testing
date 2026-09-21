@@ -1,21 +1,22 @@
 package org.example.tests;
 
-import Utils.MyConfig;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Arrays;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import Services.ReportService;
 import Services.TestFactory;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Arrays;
+import Utils.MyConfig;
 
 public class GoogleSearchTest {
     WebDriver driver;
@@ -23,7 +24,7 @@ public class GoogleSearchTest {
     @BeforeClass
     public void setup() {
         // WebDriverManager.chromedriver().setup();
-        ReportService.generateReport();
+        // ReportService.generateReport();
         System.setProperty("webdriver.chrome.driver", "LocalDriver\\chromedriver" + TestFactory.getChromeVersion()+ ".exe");
 
         ChromeOptions options = new ChromeOptions();

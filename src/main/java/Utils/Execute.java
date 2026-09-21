@@ -1,20 +1,20 @@
 package Utils;
 
-import Services.BaseFunction;
-import Services.TestFactory;
-
-import static Utils.MyConfig.TestCaseCount;
-import static Utils.MyConfig.actionSheetName;
-import static Utils.MyConfig.intCurrentDataNo;
-import static Utils.MyConfig.intCurrentRow;
-
 import java.io.FileInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import Services.BaseFunction;
+import Services.TestFactory;
+import static Utils.MyConfig.TestCaseCount;
+import static Utils.MyConfig.actionSheetName;
+import static Utils.MyConfig.intCurrentDataNo;
+import static Utils.MyConfig.intCurrentRow;
 
 public class Execute {
 
@@ -94,7 +94,7 @@ public class Execute {
                     return true;
                 }
             }
-        } catch (Exception err) {
+        } catch (IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException err) {
             err.printStackTrace();
             System.out.println("[ALERT] Error in BaseFunction Class!!!");
             throw new RuntimeException("Row : " + (intCurrentRow + 2) + ", " + err.getCause());
@@ -122,7 +122,7 @@ public class Execute {
             }
         } catch (ClassNotFoundException e) {
             return false;
-        } catch (Exception err) {
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException err) {
             err.printStackTrace();
             System.out.println("[ALERT]Error in Application Class!!!");
             throw new RuntimeException("Row : " + (intCurrentRow + 2) + ", " + err.getCause());

@@ -17,6 +17,7 @@ import java.util.Comparator;
 
 import javax.imageio.ImageIO;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -193,7 +194,7 @@ public class ReportService {
             }
         }
         
-        Integer lastCount = Integer.parseInt(sortedScreenshots.get(sortedScreenshots.size()-1).split("_")[3]);
+        Integer lastCount = Integer.valueOf(sortedScreenshots.get(sortedScreenshots.size()-1).split("_")[3]);
         String strTestcase, strTestcaseCount = "0";
         int intFlagSub = 1, intCountSub = 1;
         XWPFTable table = null;
@@ -291,7 +292,7 @@ public class ReportService {
                 double heightPt = Math.round((heightPx / (double) dpi) * 72);
                 
                 if (MyConfig.driverType.equalsIgnoreCase("mobile")) {
-                    heightPt = 265.2;
+                    heightPt = 250;
                     widthPt = 119.9;
                 } else if (heightPt/widthPt > 1.5 && heightPt/widthPt < 4) {
                     heightPt = 550;
@@ -313,7 +314,7 @@ public class ReportService {
                     Units.toEMU(widthPt),
                     Units.toEMU(heightPt)
                 );
-            } catch (Exception error) {
+            } catch (IOException | InvalidFormatException error) {
                 throw new RuntimeException(error);
             }
 
@@ -370,7 +371,7 @@ public class ReportService {
                 Units.toEMU(80),
                 Units.toEMU(60)
             );
-        } catch (Exception e) {
+        } catch (IOException | InvalidFormatException e) {
             throw new RuntimeException(e);
         }
 

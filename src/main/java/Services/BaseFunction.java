@@ -1,13 +1,16 @@
 package Services;
-import Utils.ExcelReader;
-import Utils.Execute;
-
-import Utils.MyConfig;
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -17,6 +20,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import Utils.ExcelReader;
+import Utils.Execute;
+import static Utils.Execute.getObjectName;
+import static Utils.Execute.getValue;
+import static Utils.Execute.setValue;
+import Utils.MyConfig;
 import static Utils.MyConfig.driver;
 import static Utils.MyConfig.intCurrentDataNo;
 import static Utils.MyConfig.intCurrentRow;
@@ -25,21 +34,18 @@ import static Utils.MyConfig.intTotalLoopCounter;
 import static Utils.MyConfig.mapSaveData;
 import static Utils.MyConfig.tempCurrentRow;
 import static Utils.MyConfig.tempIntDataNo;
-import static Utils.Execute.getValue;
-import static Utils.Execute.setValue;
-import static Utils.Execute.getObjectName;
-
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Map;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 
 public class BaseFunction {
 
-    private void sleep(){
+    private static final Set<String> VALID_SWIPE_DIRECTIONS =
+        Set.of("up", "down", "left", "right");
+
+    private void sleep(int seconds){
         try {
-            Thread.sleep(1000);
+            Thread.sleep(seconds * 1000);
         } catch (InterruptedException ignored) {}
     }
     private void into_view(){
@@ -47,7 +53,7 @@ public class BaseFunction {
             WebElement element = driver.findElement(By.xpath(TestFactory.getXpath(getObjectName())));
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-            sleep();
+            sleep(1);
         }
     }
 
@@ -71,7 +77,7 @@ public class BaseFunction {
 
     //Methodnya mulai sini yaa
     public void debug(){
-        sleep();
+        sleep(1);
     }
 
     public void start_new_driver() {
@@ -90,7 +96,7 @@ public class BaseFunction {
 
     // CLICK METHODS
     public void click() {
-        sleep();
+        sleep(1);
         into_view();
         new WebDriverWait(driver, Duration.ofSeconds(10))
             .ignoring(StaleElementReferenceException.class)
@@ -102,7 +108,7 @@ public class BaseFunction {
     }
 
     public void click_js() {
-        sleep();
+        sleep(1);
         into_view();
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         WebElement element = driver.findElement(By.xpath(TestFactory.getXpath(getObjectName())));
@@ -113,7 +119,7 @@ public class BaseFunction {
         if (getValue().startsWith("[") && getValue().endsWith("]")) {
             setValue(mapSaveData.get(getValue()));
         }
-        sleep();
+        sleep(1);
         new WebDriverWait(driver, Duration.ofSeconds(10))
             .ignoring(StaleElementReferenceException.class)
             .until(webDriver -> {
@@ -126,7 +132,7 @@ public class BaseFunction {
     // SET TEXT METHODS
     public void set_text() {
         if (!getValue().equalsIgnoreCase("")) {
-            sleep();
+            sleep(1);
             into_view();
             if (getValue().startsWith("[") && getValue().endsWith("]")) {
                 setValue(mapSaveData.get(getValue()));
@@ -270,7 +276,7 @@ public class BaseFunction {
     }
 
     public void if_element_exist_go_to_value() {
-        if (driver.findElements(By.xpath(TestFactory.getXpath(getObjectName()))).size() == 0) {
+        if (driver.findElements(By.xpath(TestFactory.getXpath(getObjectName()))).isEmpty()) {
             intCurrentRow = (ExcelReader.get_anchor_row_from_currentRow(MyConfig.datatableFile, "anchor_go_to_value", (getValue() + " NOT EXIST"))-1);
         }
     }
@@ -304,7 +310,7 @@ public class BaseFunction {
             }
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
-        } catch (Exception e) {
+        } catch (AWTException | RuntimeException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getCause());
         }
@@ -312,7 +318,7 @@ public class BaseFunction {
 
     public void for_data_by_sheet(){
         // [0] -> Sheet Name ; [1] -> Anchor Name
-        ArrayList<Integer> arrData = new ArrayList<Integer>();
+        ArrayList<Integer> arrData = new ArrayList<>();
         if (intTotalLoopCounter == 0) {
             arrData = ExcelReader.get_dataForSheet(MyConfig.intCurrentDataNo, getValue());
         } else {
@@ -349,4 +355,114 @@ public class BaseFunction {
             intLoopCounter = 0;
         }    
     }
+
+    //mobile
+    public void swipe_until_exist(){
+        int maxSwipe = 10;
+        int swipeCount = 0;
+        while (driver.findElements(By.xpath(TestFactory.getXpath(getObjectName()))).isEmpty() && driver.findElement(By.xpath(TestFactory.getXpath(getObjectName()))).isDisplayed() && swipeCount < maxSwipe) {
+            swipe("up");
+            swipeCount++;
+        }
+    }
+
+    public void screenshot_full_mobile(){
+        String pageSource;
+        int intScroll = 0;
+        do {
+            pageSource = driver.getPageSource();
+            screenshot();
+            swipe("up");
+            sleep(5);
+            intScroll++;
+        } while (!pageSource.equals(driver.getPageSource()) && intScroll < 30);
+    }
+
+    private void swipe(String direction) {
+        if (!isMobile()) {
+            return;
+        }
+
+        String normalizedDirection
+                = direction.toLowerCase(Locale.ROOT).trim();
+
+        if (!VALID_SWIPE_DIRECTIONS.contains(normalizedDirection)) {
+            throw new IllegalArgumentException(
+                    "Direction harus: up, down, left, atau right. "
+                    + "Direction diterima: " + direction
+            );
+        }
+
+        String platformName = String.valueOf(
+                TestFactory.getProperties("platformName")
+        ).toLowerCase(Locale.ROOT);
+
+        if (platformName.contains("android")) {
+            swipeAndroid(normalizedDirection);
+        } else if (platformName.contains("ios")) {
+            swipeIOS(normalizedDirection);
+        } else {
+            throw new UnsupportedOperationException(
+                    "Platform tidak didukung untuk swipe: " + platformName
+            );
+        }
+    }
+
+    private void swipeAndroid(String direction) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        Dimension screenSize = driver.manage().window().getSize();
+
+        int left = (int) (screenSize.width * 0.10);
+        int top = (int) (screenSize.height * 0.20);
+        int width = (int) (screenSize.width * 0.80);
+        int height = (int) (screenSize.height * 0.60);
+
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("left", left);
+        arguments.put("top", top);
+        arguments.put("width", width);
+        arguments.put("height", height);
+        arguments.put("direction", direction);
+        arguments.put("percent", 0.75);
+
+        js.executeScript(
+                "mobile: swipeGesture",
+                arguments
+        );
+    }
+
+    private void swipeIOS(String direction) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("direction", direction);
+        arguments.put("velocity", 1500);
+
+        js.executeScript(
+                "mobile: swipe",
+                arguments
+        );
+    }
+
+    // private void swipe(String direction) {
+    //     if (isMobile()) {
+    //         JavascriptExecutor js = (JavascriptExecutor) driver;
+    //         Dimension size = driver.manage().window().getSize();
+    //         // WebElement container = driver.findElement(By.xpath(TestFactory.getXpath(getObjectName())));
+    //         // js.executeScript("mobile: swipeGesture", Map.of( 
+    //         //     "elementId", ((RemoteWebElement) container).getId(), 
+    //         //     "direction", "up", 
+    //         //     "percent", 0.75 ));
+    //         js.executeScript("mobile: swipeGesture", Map.of(
+    //             "left", size.width * 0.5,
+    //             "top", size.height * 0.75,
+    //             "width", 1,
+    //             "height", size.height * 0.25,
+    //             "direction", direction,
+    //             "percent", 0.75
+    //         ));
+    //     }
+    // }
+
+
 }
